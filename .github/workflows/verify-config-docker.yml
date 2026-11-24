@@ -1,0 +1,21 @@
+name: Verify nsjail config logging Docker build
+
+on:
+  push:
+    branches:
+      - codex/verify-config-docker
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: 8b1531a71e6409270bf33f2f6dcdcc9ba3728399
+          persist-credentials: false
+      - name: Build the reviewed Dockerfile
+        run: docker build . --file Dockerfile
