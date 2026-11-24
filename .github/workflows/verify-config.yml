@@ -1,0 +1,28 @@
+name: Verify configuration debug logs
+
+on:
+  push:
+    branches: [codex/verify-config-debug-log]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: ievav100/nsjail
+          ref: 8b1531a71e6409270bf33f2f6dcdcc9ba3728399
+          persist-credentials: false
+          submodules: true
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes --no-install-recommends             autoconf bison flex gcc g++ libprotobuf-dev libnl-route-3-dev             libtool make pkg-config protobuf-compiler
+      - name: Build nsjail
+        run: make -j2
+      - name: Verify command-line and debug-log regression tests
+        run: make test-cmdline
